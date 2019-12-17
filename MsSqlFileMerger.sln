@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsSqlFileMerger", "MsSqlFileMerger\MsSqlFileMerger.csproj", "{DDED4816-000B-42FD-B7C3-778D69FD9FD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsSqlFileMerger.Test", "MsSqlFileMerger.Test\MsSqlFileMerger.Test.csproj", "{53FE880A-1447-4549-8EC4-9AC5390BB3A7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DDED4816-000B-42FD-B7C3-778D69FD9FD4}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DDED4816-000B-42FD-B7C3-778D69FD9FD4}.Debug|Any CPU.Build.0 = Debug|x86
+		{DDED4816-000B-42FD-B7C3-778D69FD9FD4}.Debug|x86.ActiveCfg = Debug|x86
+		{DDED4816-000B-42FD-B7C3-778D69FD9FD4}.Debug|x86.Build.0 = Debug|x86
+		{DDED4816-000B-42FD-B7C3-778D69FD9FD4}.Release|Any CPU.ActiveCfg = Release|x86
+		{DDED4816-000B-42FD-B7C3-778D69FD9FD4}.Release|Any CPU.Build.0 = Release|x86
+		{DDED4816-000B-42FD-B7C3-778D69FD9FD4}.Release|x86.ActiveCfg = Release|x86
+		{DDED4816-000B-42FD-B7C3-778D69FD9FD4}.Release|x86.Build.0 = Release|x86
+		{53FE880A-1447-4549-8EC4-9AC5390BB3A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53FE880A-1447-4549-8EC4-9AC5390BB3A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53FE880A-1447-4549-8EC4-9AC5390BB3A7}.Debug|x86.ActiveCfg = Debug|x86
+		{53FE880A-1447-4549-8EC4-9AC5390BB3A7}.Debug|x86.Build.0 = Debug|x86
+		{53FE880A-1447-4549-8EC4-9AC5390BB3A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53FE880A-1447-4549-8EC4-9AC5390BB3A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53FE880A-1447-4549-8EC4-9AC5390BB3A7}.Release|x86.ActiveCfg = Release|x86
+		{53FE880A-1447-4549-8EC4-9AC5390BB3A7}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F365C7B0-6311-4E44-8A50-6FA9A512940C}
+	EndGlobalSection
+EndGlobal
