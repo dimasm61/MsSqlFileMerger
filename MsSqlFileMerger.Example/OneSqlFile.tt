@@ -1,0 +1,32 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+
+<#@ output extension=".sql" encoding="UTF-8" #>
+<#@ assembly name="$(SolutionDir)MsSqlFileMerger.Example\$(OutDir)MsSqlFileMerger.dll"#>
+<#@ import namespace="MsSqlFileMerger" #>
+<#  
+
+    string solutionsPath = Host.ResolveAssemblyReference("$(SolutionDir)");
+
+    var rootPath = $"{solutionsPath}\\MsSqlFileMerger.Example\\Sql"; 
+
+    var dbName = "TEST_LOG"; 
+
+    var sqlFolders = new[]{ 
+         "Folder01",
+         "Folder02",
+        };
+
+    var merger = new SqlFileMergeHelper();
+
+    merger.Output = this;
+
+    merger.Load(dbName, rootPath, Encoding.UTF8, sqlFolders, true);
+
+    merger.WriteSqlScript();
+
+ #>
