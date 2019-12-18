@@ -11,7 +11,7 @@ namespace MsSqlFileMerger
     {
         public string SqlSourceFile;
         public int CreateOrder;
-        public string ObjectType;
+        public SqlObjectTypeEnum ObjectType;
         public string ObjectBody;
         public string Schema;
         public string Name;

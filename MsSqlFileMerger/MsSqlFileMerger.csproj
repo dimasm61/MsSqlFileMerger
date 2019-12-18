@@ -66,6 +66,7 @@
     <Compile Include="SqlFileMergeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlObject.cs" />
+    <Compile Include="SqlObjectTypeEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\NugetPackage\MsSqlFileMerger.nuspec">
@@ -77,10 +78,8 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)NugetPackage\lib\" /y
 
-rem del "$(SolutionDir)NugetPackage\MsSqlFileMerger.0.0.0.3.nupkg"
+"$(SolutionDir)nuget.exe" pack "$(SolutionDir)NugetPackage\MsSqlFileMerger.nuspec" -Version 0.0.0.4 -OutputDirectory "$(SolutionDir)NugetPackage"
 
-"$(SolutionDir)nuget.exe" pack "$(SolutionDir)NugetPackage\MsSqlFileMerger.nuspec" -Version 0.0.0.3 -OutputDirectory "$(SolutionDir)NugetPackage"
-
-copy "$(SolutionDir)NugetPackage\MsSqlFileMerger.0.0.0.3.nupkg" "\\srv-2\Archive_MCS\Отдел разработки ИС и БД\VisualStudioLocalRepository" /y</PostBuildEvent>
+copy "$(SolutionDir)NugetPackage\MsSqlFileMerger.0.0.0.4.nupkg" "M:\LocalRep" /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

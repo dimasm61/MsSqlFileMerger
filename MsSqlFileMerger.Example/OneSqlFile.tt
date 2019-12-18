@@ -17,7 +17,7 @@
     var dbName = "TEST_LOG"; 
 
     var sqlFolders = new[]{ 
-         "Folder01",
+         "Folder01", 
          "Folder02",
         };
 

@@ -58,11 +58,6 @@ namespace MsSqlFileMerger
 
                 }//foreach( var sqlFile in files)
             }//foreach(var sqlFolder in sqlFolders)
-
-            // foreach (var item in sqlObjectList)
-            // {
-            //     WriteLine($"//{item.CreateOrder:00} - {item.ObjectType} - {item.Schema}.{item.Name}");
-            // }
         }
 
         private void ParseFile(ref string[] lines, ref int createOrderCounter, string sqlSourceFile, bool isSpToEndFile)
@@ -95,7 +90,7 @@ namespace MsSqlFileMerger
             if (s.ToLower().Contains("create procedure"))
             {
                 var newObj = new SqlObject();
-                newObj.ObjectType = "proc";
+                newObj.ObjectType = SqlObjectTypeEnum.StoredProc;
                 newObj.ParseName(s);
                 newObj.CreateOrder = createOrderCounter++;
                 newObj.SqlSourceFile = sqlSourceFile;
@@ -108,7 +103,7 @@ namespace MsSqlFileMerger
             if (s.ToLower().Contains("create function"))
             {
                 var newObj = new SqlObject();
-                newObj.ObjectType = "func";
+                newObj.ObjectType = SqlObjectTypeEnum.Function;
                 newObj.ParseName(s);
                 newObj.CreateOrder = createOrderCounter++;
                 newObj.SqlSourceFile = sqlSourceFile;
@@ -120,7 +115,7 @@ namespace MsSqlFileMerger
             if (s.ToLower().Contains("create table"))
             {
                 var newObj = new SqlObject();
-                newObj.ObjectType = "table";
+                newObj.ObjectType = SqlObjectTypeEnum.Table;
                 newObj.ParseName(s);
                 newObj.CreateOrder = createOrderCounter++;
                 newObj.SqlSourceFile = sqlSourceFile;
@@ -132,7 +127,7 @@ namespace MsSqlFileMerger
             if (s.ToLower().Contains("create view"))
             {
                 var newObj = new SqlObject();
-                newObj.ObjectType = "view";
+                newObj.ObjectType = SqlObjectTypeEnum.View;
                 newObj.ParseName(s);
                 newObj.CreateOrder = createOrderCounter++;
                 newObj.SqlSourceFile = sqlSourceFile;
@@ -300,23 +295,23 @@ namespace MsSqlFileMerger
                 WriteLine($"-- create order {obj.CreateOrder}");
                 switch (obj.ObjectType)
                 {
-                    case "proc":
+                    case SqlObjectTypeEnum.StoredProc:
                         WriteLine($"if exists(select 1 from sysobjects where id = object_id('{obj.Schema}.{obj.Name}')and type in ('P', 'PC'))");
                         WriteLine($"    drop procedure {obj.Schema}.{obj.Name}");
                         WriteLine($"go");
                         break;
-                    case "func":
+                    case SqlObjectTypeEnum.Function:
                         // if exists (select 1 from sysobjects where  id = object_id('nav.fnGetPassTypeCode') and type in ('IF', 'FN', 'TF')) drop function nav.fnGetPassTypeCode
                         WriteLine($"if exists(select 1 from sysobjects where id = object_id('{obj.Schema}.{obj.Name}')and type in ('IF', 'FN', 'TF'))");
                         WriteLine($"    drop function {obj.Schema}.{obj.Name}");
                         WriteLine($"go");
                         break;
-                    case "table":
+                    case SqlObjectTypeEnum.Table:
                         WriteLine($"if exists(select 1 from information_schema.tables where table_name = '{obj.Name}'  and table_schema = '{obj.Schema}')");
                         WriteLine($"    drop table {obj.Schema}.{obj.Name}");
                         WriteLine($"go");
                         break;
-                    case "view":
+                    case SqlObjectTypeEnum.View:
                         //if exists (select 1 from  sysobjects where  id = object_id('nav.vPassRecStartFinish') and   type = 'V') drop view nav.vPassRecStartFinish
                         WriteLine($"if exists(select 1 from sysobjects where id = object_id('{obj.Schema}.{obj.Name}')and type = 'V')");
                         WriteLine($"    drop view {obj.Schema}.{obj.Name}");
