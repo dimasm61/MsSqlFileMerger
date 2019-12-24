@@ -70,8 +70,11 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="ConsoleHook.cs" />
+    <Compile Include="UnitTest03ScriptParser.cs" />
+    <Compile Include="UnitTest02HeaderParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTest01StrHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -95,6 +98,11 @@
     <Content Include="Sp\10_nav.spAfterPassNew.sql" />
     <Content Include="Sp\10_spLogActionSetLogObjectDo.sql" />
     <Content Include="Table\01_Tables.sql" />
+    <Content Include="Test\test_proc.sql" />
+    <Content Include="Test\test_table.sql" />
+    <Content Include="Test\test_view.sql" />
+    <Content Include="Test\test_func.sql" />
+    <Content Include="View\nav.Test.sql" />
     <Content Include="View\nav.vPassRecStartFinish.sql" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
