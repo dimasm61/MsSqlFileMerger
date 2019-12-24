@@ -67,14 +67,17 @@ namespace MsSqlFileMerger
                 WriteLine($"");
             }
 
-            WriteLine($"--------------------------------------------------------");
+            WriteLine($"/*-------------------------------------------------------*/");
 
             foreach (var obj in sqlObjectList.OrderBy(c => c.CreateOrder))
             {
                 WriteLine($"-- source file {obj.SqlSourceFile}");
                 WriteLine($"-- create order {obj.CreateOrder}");
                 Write($"go{Environment.NewLine}{obj.ObjectBody}");
-                WriteLine($"go");
+                
+                if(!obj.ObjectBody.EndsWith("go"))
+                    WriteLine($"go");
+
                 WriteLine($"");
             }
 

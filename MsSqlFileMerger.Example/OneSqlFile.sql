@@ -1,5 +1,8 @@
 ﻿
 
+use TEST_LOG;
+go;
+
 -- create order 3
 if exists(select 1 from sysobjects where id = object_id('dbo.TestView')and type = 'V')
     drop view dbo.TestView
@@ -20,7 +23,7 @@ if exists(select 1 from sysobjects where id = object_id('dbo.TestProc1')and type
     drop procedure dbo.TestProc1
 go
 
---------------------------------------------------------
+/*-------------------------------------------------------*/
 -- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder01\01_Proc1.sql
 -- create order 0
 go
@@ -32,8 +35,7 @@ end
 go -- certainly after stored proc
 
 -- some test code
-exec dbp.TestProc1
-go
+exec dbp.TestProc1go
 
 -- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder01\02_View1.sql
 -- create order 1
@@ -47,6 +49,8 @@ as
     union all select 5, newid()
 go
 
+select * from dbo.TestViewgo
+
 -- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder02\01_Proc2.sql
 -- create order 2
 go
@@ -58,8 +62,7 @@ end
 go -- certainly after stored proc
 
 -- some test code
-exec dbp.TestProc1
-go
+exec dbp.TestProc1go
 
 -- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder02\02_View2.sql
 -- create order 3
@@ -72,4 +75,6 @@ as
     union all select 4, newid()
     union all select 5, newid()
 go
+
+select * from dbo.TestViewgo
 

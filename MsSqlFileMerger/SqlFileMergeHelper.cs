@@ -20,6 +20,13 @@ namespace MsSqlFileMerger
         private SqlObjectParser _parser;
         private SqlObjectFileLoader _sqlFileLoader;
 
+        public TextTransformation Output
+        {
+            get => _sqlObjectWriter.Output;
+            set => _sqlObjectWriter.Output = value;
+        }
+
+
         public SqlFileMergeHelper()
         {
             _sqlObjectList = new List<SqlObject>();
@@ -50,12 +57,19 @@ namespace MsSqlFileMerger
                     if (!string.IsNullOrEmpty(sqlFile) && sqlFile.ToLower().Contains("ignore"))
                         continue;
 
-                    _sqlFileLoader.LoadFile(sqlFile, encoding, ref createOrderCounter, isSpToEndFile);
+                    var parsedObjects = _sqlFileLoader.LoadFile(sqlFile, encoding, ref createOrderCounter, isSpToEndFile);
+
+                    foreach (var parsedObject in parsedObjects)
+                    {
+                        _sqlObjectList.Add(parsedObject);
+                    }
 
                     readedFiles.Add(sqlFile);
 
                 }//foreach( var sqlFile in files)
             }//foreach(var sqlFolder in sqlFolders)
+
+
         }
 
 
