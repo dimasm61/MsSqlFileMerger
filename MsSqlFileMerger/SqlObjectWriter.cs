@@ -34,8 +34,8 @@ namespace MsSqlFileMerger
 
         public void WriteUseDb(string dbName)
         {
-            WriteLine($"use {dbName};");
-            WriteLine($"go;");
+            WriteLine($"use {dbName}");
+            WriteLine($"go");
             WriteLine($"");
         }
 
@@ -85,9 +85,9 @@ namespace MsSqlFileMerger
                 if (IsWriteFileName) WriteLine($"-- source file {obj.SqlSourceFile}");
                 if (IsWriteGenOrder) WriteLine($"-- generate order {obj.CreateOrder}");
 
-                Write($"go{Environment.NewLine}{obj.ObjectBody}");
+                WriteLine($"go{Environment.NewLine}{obj.ObjectBody}");
 
-                if (!obj.ObjectBody.EndsWith("go"))
+                if (!obj.ObjectBody.ToLower().EndsWith("go"))
                     WriteLine($"go");
 
                 WriteLine($"");

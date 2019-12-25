@@ -1,0 +1,47 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+
+<#@ output extension=".sql" encoding="UTF-8" #>
+<#@ assembly name="$(SolutionDir)MsSqlFileMerger.Example\$(OutDir)MsSqlFileMerger.dll"#>
+<#@ import namespace="MsSqlFileMerger" #>
+<#  
+
+    string solutionsPath = Host.ResolveAssemblyReference("$(SolutionDir)");
+
+    var rootPath = @"M:\mcs_2019\trunk\02_Sql\VtsDb3\";
+
+    var dbName = "VTSDB3_1"; 
+
+    var sqlFolders = new[]{ 
+            "Nsi", 
+            "Plan", 
+            "PassView", 
+            "Pilot", 
+            
+            "Request", 
+            "NavSign",
+            "Scan",
+            "Snr",
+            "User",
+            "Contact",
+            "Automation\\Views", 
+            "Automation\\Func", 
+
+            "Automation\\Sp", 
+            "PassSp", 
+            };
+
+
+    var merger = new SqlFileMergeHelper();
+
+    merger.Output = this;
+
+    merger.Load(dbName, rootPath, Encoding.UTF8, sqlFolders, false);
+
+    merger.WriteSqlScript();
+
+ #>

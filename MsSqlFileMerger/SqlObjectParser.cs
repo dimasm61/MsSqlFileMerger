@@ -54,13 +54,13 @@ namespace MsSqlFileMerger
                 {
                     if (output != null)
                     {
-                        output.WriteLine($"couldn't extract sql object type, schema, and name");
-                        output.WriteLine($"something wrong in header string '{s}'");
+                        output.WriteLine($"-- couldn't extract sql object type, schema, and name");
+                        output.WriteLine($"-- something wrong in header string '{s}'");
                     }
                     else
                     {
-                        Trace.TraceWarning($"couldn't extract sql object type, schema, and name");
-                        Trace.TraceWarning($"something wrong in header string '{s}'");
+                        Trace.TraceWarning($"-- couldn't extract sql object type, schema, and name");
+                        Trace.TraceWarning($"-- something wrong in header string '{s}'");
                     }
 
                     // something in header fail
@@ -114,33 +114,12 @@ namespace MsSqlFileMerger
             return result;
         }
 
-        //public static SqlObject ParseObjectHeader(string line, ref int createOrderCounter, string sqlSourceFile = null)
-        //{
-        //    var newObj = new SqlObject();
-        //    newObj.ObjectType = SqlObjectTypeEnum.No;
-
-        //    if (line.ToLower().Contains("create procedure")) newObj.ObjectType = SqlObjectTypeEnum.Procedure;
-        //    if (line.ToLower().Contains("create function")) newObj.ObjectType = SqlObjectTypeEnum.Function;
-        //    if (line.ToLower().Contains("create table")) newObj.ObjectType = SqlObjectTypeEnum.Table;
-        //    if (line.ToLower().Contains("create view")) newObj.ObjectType = SqlObjectTypeEnum.View;
-        //    newObj.ParseName(line);
-        //    newObj.CreateOrder = createOrderCounter++;
-        //    newObj.SqlSourceFile = sqlSourceFile;
-
-        //    if (newObj.ObjectType == SqlObjectTypeEnum.No)
-        //        return null;
-
-        //    return newObj;
-        //}
-
         private void ExtractSqlSp(ref string[] lines, ref int startLineNum, SqlObject sqlObject, bool isSpToEndFile)
         {
             var beginNested = 0;
             var firstBeginIdx = 0;
             var endIdx = 0;
             var idx = 0;
-            // var body = "";
-
 
             var func = new Func<string, bool>((line) =>
             {
@@ -155,7 +134,7 @@ namespace MsSqlFileMerger
 
             for (idx = startLineNum; idx < lines.Length; idx++)
             {
-                var line = lines[idx];
+                var line = lines[idx].ToLower();
 
                 while (line?.Contains("  ") == true) line = line?.Replace("  ", " ")?.Trim();
 
@@ -171,7 +150,7 @@ namespace MsSqlFileMerger
                     continue;
                 }
 
-                var wordListInLine = line.ToLower().Split(' ', ',', '.', ';', '\t').ToList();
+                var wordListInLine = line.Split(' ', ',', '.', ';', '\t').ToList();
 
                 while (wordListInLine.Contains("begin"))
                 {
@@ -200,8 +179,8 @@ namespace MsSqlFileMerger
                 while (wordListInLine.Contains("end"))
                 {
                     beginNested--;
-                    if (beginNested == 0)
-                        endIdx = idx;
+                    // if (beginNested == 0)
+                    //     endIdx = idx;
 
                     var xIdx = wordListInLine.IndexOf("end");
 
@@ -213,8 +192,8 @@ namespace MsSqlFileMerger
 
                     if (line.ToLower() == "go")
                     {
-                        beginNested--;
-                        if (beginNested == 0)
+                        //beginNested--;
+                        //if (beginNested == 0)
                             endIdx = idx;
 
                     }
@@ -283,7 +262,7 @@ namespace MsSqlFileMerger
                 }
 
                 // Конец таблиц считаем по GO
-                if (line == "go" && !isToEndFile)
+                if (line.ToLower() == "go" && !isToEndFile)
                     break;
 
                 var endOfLine = (idx < lines.Length - 1) ? Environment.NewLine : "";
