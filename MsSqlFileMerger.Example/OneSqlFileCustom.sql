@@ -1,49 +1,38 @@
 ﻿
 
+-- time 25.12.2019 10:59
+
 use TEST_LOG;
 go;
 
--- create order 3
 if exists(select 1 from sysobjects where id = object_id('dbo.TestView')and type = 'V')
     drop view dbo.TestView
 go
 
--- create order 2
 if exists(select 1 from sysobjects where id = object_id('dbo.TestProc1')and type in ('P', 'PC'))
     drop procedure dbo.TestProc1
 go
 
--- create order 1
 if exists(select 1 from sysobjects where id = object_id('dbo.TestView')and type = 'V')
     drop view dbo.TestView
 go
 
--- create order 0
 if exists(select 1 from sysobjects where id = object_id('dbo.TestProc1')and type in ('P', 'PC'))
     drop procedure dbo.TestProc1
 go
 
 
-/* ================================================================== */
-
-
-/* ------------------------------------------------------------------ */
-
--- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder01\01_Proc1.sql
--- generate order 0
+-- ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 go
 create procedure dbo.TestProc1
 as 
 begin
+    -- ver:0.0.1.9, date:25.12.2019
     select 1;
 end
 go
 
-
-/* ------------------------------------------------------------------ */
-
--- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder01\02_View1.sql
--- generate order 1
+-- ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 go
 create view dbo.TestView
 as
@@ -54,13 +43,7 @@ as
     union all select 5, newid()
 go
 
-select * from dbo.TestViewgo
-
-
-/* ------------------------------------------------------------------ */
-
--- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder02\01_Proc2.sql
--- generate order 2
+-- ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 go
 create procedure dbo.TestProc1
 as 
@@ -69,11 +52,7 @@ begin
 end
 go
 
-
-/* ------------------------------------------------------------------ */
-
--- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder02\02_View2.sql
--- generate order 3
+-- ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 go
 create view dbo.TestView
 as
@@ -83,6 +62,4 @@ as
     union all select 4, newid()
     union all select 5, newid()
 go
-
-select * from dbo.TestViewgo
 

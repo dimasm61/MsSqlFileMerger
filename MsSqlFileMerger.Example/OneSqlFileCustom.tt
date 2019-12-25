@@ -9,7 +9,6 @@
 <#@ assembly name="$(SolutionDir)MsSqlFileMerger.Example\$(OutDir)MsSqlFileMerger.dll"#>
 <#@ import namespace="MsSqlFileMerger" #>
 <#  
-
     string solutionDir = Host.ResolveAssemblyReference("$(SolutionDir)");
 
     var rootPath = $"{solutionDir}\\MsSqlFileMerger.Example\\Sql"; 
@@ -25,8 +24,23 @@
 
     merger.Output = this;
 
-    merger.Load(dbName, rootPath, Encoding.UTF8, sqlFolders, true);
+    // setup generate options
+    merger.IsWriteGenOrder = false;
+    merger.IsWriteFileName = false;
+    merger.RowDelimiterDropCreate = null;
+    merger.RowDelimiterObject = "-- ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙";
 
+    merger.Load(dbName, rootPath, Encoding.UTF8, sqlFolders, false);
+
+    // add version and date to sql proc body (by template)
+    merger.ReplaceInBody("[version]","ver:0.0.1.9");
+    merger.ReplaceInBody("[date]",$"date:{DateTime.Now:dd.MM.yyyy}");
+
+    // write generate date
+    WriteLine($"-- time {DateTime.Now:dd.MM.yyyy HH:mm}");
+    WriteLine("");
+
+    // write script
     merger.WriteSqlScript();
 
  #>

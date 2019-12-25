@@ -12,8 +12,8 @@
         <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>T4 generator extension class for merge SQL script files into one</description>
-        <releaseNotes> Review sql object parser code, added unit tests, some bug fixed, it's much better then previous ver.
-                       Example of use: https://github.com/dimasm61/MsSqlFileMerger/tree/master/MsSqlFileMerger.Example
+        <releaseNotes>Some bugs fixed, added customize of generate, added error handlers (output to trace or T4).
+            Example of use: https://github.com/dimasm61/MsSqlFileMerger/tree/master/MsSqlFileMerger.Example
         </releaseNotes>
         <copyright>free</copyright>
         <tags>0</tags>

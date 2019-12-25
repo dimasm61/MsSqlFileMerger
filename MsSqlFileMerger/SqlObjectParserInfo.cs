@@ -11,10 +11,12 @@ namespace MsSqlFileMerger
     {
         public static string ExtractObjectInfo(this string[] lines, ref int lineIndex, ref int startObjectLineIdx, ref string objectType, ref string objectSchema, ref string objectName)
         {
-            if (lineIndex >= lines.Length-1)
+            if (lineIndex >= lines.Length - 1)
                 return "";
 
             var sb = new StringBuilder(1000);
+
+            var maxStepCounter = 0;
 
             var commentDepth = 0;
             var doWork = true;
@@ -29,7 +31,7 @@ namespace MsSqlFileMerger
             // get string after 'start' file or 'go' word,
             // up to 'as' with removing comments
 
-            while (doWork)
+            while (doWork & maxStepCounter++ < 1000000)
             {
                 if (string.IsNullOrWhiteSpace(line))
                 {
@@ -89,7 +91,7 @@ namespace MsSqlFileMerger
                     }
 
                     // if GO = then new line
-                    if (sb.CompareLastAddedSentence("go"/*,' ','-','/'*/) 
+                    if (sb.CompareLastAddedSentence("go"/*,' ','-','/'*/)
                         || line.Trim().ToLower() == "go")
                     {
                         sb.Clear();
@@ -105,14 +107,14 @@ namespace MsSqlFileMerger
 
                 MoveNextSymbol(ref doWork, ref lines, ref lineIndex, ref line, ref idx, ref sb);
 
-                
+
             }// while do work
 
             var str = sb.ToString();
 
             // extract object type and name using regex
             //var regex = new Regex(@"(create|alter)(\s*)(procedure|proc|table|trigger|view|function)(\s*)((\s[a-z]*[.])|\s)([a-zA-Z0-9]*)(.*)as", RegexOptions.IgnoreCase);
-            var regex = new Regex(@"(create|alter)\s*(procedure|proc|table|trigger|view|function)\s*(([a-zA-Z0-9^.]*[.][.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*[.][a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*))([a-zA-Z0-9]*)(.*)(as|\()(\s|[-]|\/)", RegexOptions.IgnoreCase);
+            var regex = new Regex(@"((\s|[-]|[\/]|(?<=\ |^))((create|alter)[\s]*))((procedure|proc|procc|table|trigger|view|function)[\s])[\s]*(([a-zA-Z0-9^.]*[.][.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*[.][a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*))([a-zA-Z0-9]*)(.*)(as|\()(\s|[-]|\/)", RegexOptions.IgnoreCase);
 
             var match = regex.Match(str);
 
@@ -120,9 +122,9 @@ namespace MsSqlFileMerger
             {
                 var opertr = match.Groups[1].Value.Trim();
 
-                objectType = match.Groups[2].Value.Trim(' ');
+                objectType = match.Groups[5].Value.Trim(' ');
 
-                var objFullName = match.Groups[3].Value.Trim();
+                var objFullName = match.Groups[7].Value.Trim();
 
                 // create view View1
                 if (new Regex(regexPattern1).Match(objFullName) is Match m1 && m1.Success)

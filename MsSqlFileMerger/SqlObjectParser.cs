@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TextTemplating;
 
 namespace MsSqlFileMerger
 {
     internal class SqlObjectParser
     {
-        public List<SqlObject> ParseStrArray(ref string[] lines, ref int createOrderCounter, string sqlSourceFile, bool isSpToEndFile)
+        public List<SqlObject> ParseStrArray(TextTransformation output, ref string[] lines, ref int createOrderCounter, string sqlSourceFile, bool isToEndFile)
         {
             var result = new List<SqlObject>();
             var i = 0;
@@ -20,7 +22,7 @@ namespace MsSqlFileMerger
                 if (string.IsNullOrEmpty(line?.Trim()))
                     continue;
 
-                var list = ExtractSqlObject(ref lines, ref i, ref createOrderCounter, sqlSourceFile, isSpToEndFile);
+                var list = ExtractSqlObject(output, ref lines, ref i, ref createOrderCounter, sqlSourceFile, isToEndFile);
 
                 foreach (var item in list)
                     result.Add(item);
@@ -31,22 +33,47 @@ namespace MsSqlFileMerger
         }
 
 
-        private List<SqlObject> ExtractSqlObject(ref string[] lines, ref int startLineNum, ref int createOrderCounter, string sqlSourceFile, bool isToEndFile)
+        private List<SqlObject> ExtractSqlObject(TextTransformation output, ref string[] lines, ref int startLineNum, ref int createOrderCounter, string sqlSourceFile, bool isToEndFile)
         {
             var result = new List<SqlObject>();
 
-            var startObjectLineIdx = 0;
+            var startObjectLineIdx = startLineNum;
             var objectType = "";
             var objectSchema = "";
             var objectName = "";
 
+            var maxStepCounter = 0;
+
             var s = lines.ExtractObjectInfo(ref startLineNum, ref startObjectLineIdx, ref objectType, ref objectSchema, ref objectName);
 
-            while (!string.IsNullOrWhiteSpace(objectName) && !string.IsNullOrWhiteSpace(objectType))
+            while (!string.IsNullOrWhiteSpace(objectName) && !string.IsNullOrWhiteSpace(objectType) & maxStepCounter++ < 1000)
             {
 
                 var obj = new SqlObject();
-                if (!Enum.TryParse(objectType, true, out SqlObjectTypeEnum a)) continue;
+                if (!Enum.TryParse(objectType, true, out SqlObjectTypeEnum a))
+                {
+                    if (output != null)
+                    {
+                        output.WriteLine($"couldn't extract sql object type, schema, and name");
+                        output.WriteLine($"something wrong in header string '{s}'");
+                    }
+                    else
+                    {
+                        Trace.TraceWarning($"couldn't extract sql object type, schema, and name");
+                        Trace.TraceWarning($"something wrong in header string '{s}'");
+                    }
+
+                    // something in header fail
+                    // try move to next GO
+                    for (var i = startLineNum; i < lines.Length; i++)
+                    {
+                        startLineNum = i;
+
+                        if (lines[i].Trim(' ').ToLower().StartsWith("go"))
+                            break;
+                    }
+                    break;
+                }
 
                 obj.ObjectType = a;
                 obj.Schema = objectSchema;
@@ -66,6 +93,9 @@ namespace MsSqlFileMerger
                         ExtractSqlViewBody(ref lines, ref startLineNum, obj, isToEndFile);
                         break;
                     case SqlObjectTypeEnum.Procedure:
+                        ExtractSqlSp(ref lines, ref startLineNum, obj, isToEndFile);
+                        break;
+                    case SqlObjectTypeEnum.Proc:
                         ExtractSqlSp(ref lines, ref startLineNum, obj, isToEndFile);
                         break;
                     case SqlObjectTypeEnum.Function:
@@ -141,7 +171,7 @@ namespace MsSqlFileMerger
                     continue;
                 }
 
-                var wordListInLine = line.ToLower().Split(' ', ',', '.', ';').ToList();
+                var wordListInLine = line.ToLower().Split(' ', ',', '.', ';', '\t').ToList();
 
                 while (wordListInLine.Contains("begin"))
                 {
@@ -167,32 +197,21 @@ namespace MsSqlFileMerger
                 }
 
 
+                while (wordListInLine.Contains("end"))
+                {
+                    beginNested--;
+                    if (beginNested == 0)
+                        endIdx = idx;
 
-                //lineArr = line.ToLower().Split(' ');
+                    var xIdx = wordListInLine.IndexOf("end");
 
-                //if (line == "end")
+                    wordListInLine.RemoveAt(xIdx);
+                }
+
                 if (!isSpToEndFile)
                 {
-                    //if (wordListInLine.Contains("end"))
-                    //{
-                    //    beginNested--;
-                    //    if (beginNested == 0)
-                    //        endIdx = idx;
 
-                    //}
-
-                    while (wordListInLine.Contains("end"))
-                    {
-                        beginNested--;
-                        if (beginNested == 0)
-                            endIdx = idx;
-
-                        var xIdx = wordListInLine.IndexOf("end");
-
-                        wordListInLine.RemoveAt(xIdx);
-                    }
-
-                    if (line == "go")
+                    if (line.ToLower() == "go")
                     {
                         beginNested--;
                         if (beginNested == 0)

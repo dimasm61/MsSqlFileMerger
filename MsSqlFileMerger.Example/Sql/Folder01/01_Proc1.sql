@@ -5,6 +5,7 @@ go
 create procedure dbo.TestProc1
 as 
 begin
+    -- [version], [date]
     select 1;
 end
 go -- certainly after stored proc

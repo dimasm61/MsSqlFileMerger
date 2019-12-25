@@ -238,5 +238,31 @@ namespace MsSqlFileMerger.Test
 
             TestAndCheckResult(ref lines, 1, "view", "db", "view01");
         }
+
+        [TestMethod]
+        public void TestMethod_ParseCommentFilter14()
+        {
+            var lines = new[]
+            {
+                "go",
+                "create procedure nav.PassArchiveSelect",
+                "        @skip        int",
+                "      , @take        int",
+                "      , @dateFrom    datetime         = null",
+                "      , @dateTo      datetime         = null",
+                "      , @txtFilter   nvarchar(100)    = null",
+                "      , @vtsCode         nvarchar(5)  = null",
+                "      , @vtsZoneCode     nvarchar(5)  = null",
+                "      , @passFairwayCode nvarchar(10) = null",
+                "      , @passDirection   nvarchar(10) = null",
+                "      , @vesselGuid      uniqueidentifier = null",
+                "      , @countAll   int output",
+                "as",
+                "begin",
+                "    --",
+            };
+
+            TestAndCheckResult(ref lines, 1, "procedure", "nav", "PassArchiveSelect");
+        }
     }
 }

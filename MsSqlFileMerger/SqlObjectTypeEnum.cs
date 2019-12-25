@@ -8,6 +8,6 @@ namespace MsSqlFileMerger
 {
     internal enum SqlObjectTypeEnum
     {
-        No, Table, View, Procedure, Function
+        No, Table, View, Procedure, Proc, Function
     }
 }

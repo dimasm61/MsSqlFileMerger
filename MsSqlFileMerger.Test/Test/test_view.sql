@@ -4,18 +4,18 @@ as
     select 1
 ------------------
 go
-create view dbo.view02  as /* */
+create view [dbo].view02  as /* */
 select 1
 ------------------
 go
-create view dbo.view03 -- dbo.View3  
+create view dbo.[view03] -- dbo.View3  
 as
 select
 1
 go
 ------------------
 go
-create view dbo.view04 /**/  as select 1
+create view [dbo].[view04] /**/  as select 1
 go
 ------------------
 go

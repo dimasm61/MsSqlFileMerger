@@ -46,6 +46,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="OneSqlFileCustom.sql">
+      <DependentUpon>OneSqlFileCustom.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Content>
+    <Content Include="OneSqlFileCustom.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>OneSqlFileCustom.sql</LastGenOutput>
+    </Content>
     <Content Include="OneSqlFile.sql">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

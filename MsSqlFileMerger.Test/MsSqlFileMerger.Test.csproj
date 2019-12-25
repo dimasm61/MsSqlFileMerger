@@ -91,7 +91,8 @@
     <Content Include="Func\table_nav.fnGetPassRecStartFinish.sql" />
     <Content Include="Func\table_nav.fnGetPrevPass.sql" />
     <Content Include="Func\table_nav.fnGetPrevPassRec.sql" />
-    <Content Include="Sp\00_atm.AutoProcessing.sql" />
+    <Content Include="Sp\00_atm.CrossMoveInOut.sql" />
+    <Content Include="Sp\00_atm.CrossLineBorder.sql" />
     <Content Include="Sp\01_spLogActionStartDo.sql" />
     <Content Include="Sp\01_spLogActionStartSubDo.sql" />
     <Content Include="Sp\03_spLogActionFinishDo.sql" />
@@ -104,6 +105,7 @@
     <Content Include="Test\test_table.sql" />
     <Content Include="Test\test_view.sql" />
     <Content Include="Test\test_func.sql" />
+    <Content Include="View\nsi.vPort.sql" />
     <Content Include="View\nav.Test.sql" />
     <Content Include="View\nav.vPassRecStartFinish.sql" />
   </ItemGroup>

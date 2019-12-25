@@ -11,6 +11,11 @@ namespace MsSqlFileMerger
     {
         public TextTransformation Output;
 
+        public string RowDelimiterDropCreate = $"{Environment.NewLine}/* ================================================================== */{Environment.NewLine}";
+        public string RowDelimiterObject = $"{Environment.NewLine}/* ------------------------------------------------------------------ */{Environment.NewLine}";
+        public bool IsWriteGenOrder = true;
+        public bool IsWriteFileName = true;
+
         private void WriteLine(string line)
         {
             if (Output != null)
@@ -38,7 +43,7 @@ namespace MsSqlFileMerger
         {
             foreach (var obj in sqlObjectList.OrderByDescending(c => c.CreateOrder))
             {
-                WriteLine($"-- create order {obj.CreateOrder}");
+                if (IsWriteGenOrder) WriteLine($"-- create order {obj.CreateOrder}");
                 switch (obj.ObjectType)
                 {
                     case SqlObjectTypeEnum.Procedure:
@@ -46,8 +51,12 @@ namespace MsSqlFileMerger
                         WriteLine($"    drop procedure {obj.Schema}.{obj.Name}");
                         WriteLine($"go");
                         break;
+                    case SqlObjectTypeEnum.Proc:
+                        WriteLine($"if exists(select 1 from sysobjects where id = object_id('{obj.Schema}.{obj.Name}')and type in ('P', 'PC'))");
+                        WriteLine($"    drop procedure {obj.Schema}.{obj.Name}");
+                        WriteLine($"go");
+                        break;
                     case SqlObjectTypeEnum.Function:
-                        // if exists (select 1 from sysobjects where  id = object_id('nav.fnGetPassTypeCode') and type in ('IF', 'FN', 'TF')) drop function nav.fnGetPassTypeCode
                         WriteLine($"if exists(select 1 from sysobjects where id = object_id('{obj.Schema}.{obj.Name}')and type in ('IF', 'FN', 'TF'))");
                         WriteLine($"    drop function {obj.Schema}.{obj.Name}");
                         WriteLine($"go");
@@ -67,15 +76,18 @@ namespace MsSqlFileMerger
                 WriteLine($"");
             }
 
-            WriteLine($"/*-------------------------------------------------------*/");
+            WriteLine(RowDelimiterDropCreate);
 
             foreach (var obj in sqlObjectList.OrderBy(c => c.CreateOrder))
             {
-                WriteLine($"-- source file {obj.SqlSourceFile}");
-                WriteLine($"-- create order {obj.CreateOrder}");
+                WriteLine(RowDelimiterObject);
+
+                if (IsWriteFileName) WriteLine($"-- source file {obj.SqlSourceFile}");
+                if (IsWriteGenOrder) WriteLine($"-- generate order {obj.CreateOrder}");
+
                 Write($"go{Environment.NewLine}{obj.ObjectBody}");
-                
-                if(!obj.ObjectBody.EndsWith("go"))
+
+                if (!obj.ObjectBody.EndsWith("go"))
                     WriteLine($"go");
 
                 WriteLine($"");
