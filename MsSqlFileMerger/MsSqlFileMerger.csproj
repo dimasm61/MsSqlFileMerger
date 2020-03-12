@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces.cs" />
     <Compile Include="SqlObjectFileLoader.cs" />
     <Compile Include="SqlFileMergeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -82,8 +83,8 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)NugetPackage\lib\" /y
 
-"$(SolutionDir)nuget.exe" pack "$(SolutionDir)NugetPackage\MsSqlFileMerger.nuspec" -Version 0.0.0.8 -OutputDirectory "$(SolutionDir)NugetPackage"
+"$(SolutionDir)nuget.exe" pack "$(SolutionDir)NugetPackage\MsSqlFileMerger.nuspec" -Version 0.0.0.9 -OutputDirectory "$(SolutionDir)NugetPackage"
 
-copy "$(SolutionDir)NugetPackage\MsSqlFileMerger.0.0.0.8.nupkg" "M:\LocalRep" /y</PostBuildEvent>
+copy "$(SolutionDir)NugetPackage\MsSqlFileMerger.0.0.0.9.nupkg" "M:\LocalRep" /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TextTemplating;
 
 namespace MsSqlFileMerger
 {
-    internal class SqlObjectWriter
+    public class SqlObjectWriter
     {
         public TextTransformation Output;
 
@@ -16,7 +16,7 @@ namespace MsSqlFileMerger
         public bool IsWriteGenOrder = true;
         public bool IsWriteFileName = true;
 
-        private void WriteLine(string line)
+        public void WriteLine(string line)
         {
             if (Output != null)
                 Output.WriteLine(line);
@@ -24,7 +24,7 @@ namespace MsSqlFileMerger
                 Console.WriteLine(line);
         }
 
-        private void Write(string line)
+        public void Write(string line)
         {
             if (Output != null)
                 Output.Write(line);

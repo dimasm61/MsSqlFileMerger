@@ -12,13 +12,14 @@ using Microsoft.VisualStudio.TextTemplating;
 
 namespace MsSqlFileMerger
 {
-    public class SqlFileMergeHelper
+    public class SqlFileMergeHelper: IMerger, IMergerForTest
     {
         private string _dbName = "";
-        private readonly SqlObjectWriter _sqlObjectWriter;
-        private readonly List<SqlObject> _sqlObjectList;
-        private readonly SqlObjectParser _parser;
-        private readonly SqlObjectFileLoader _sqlFileLoader;
+        private SqlObjectWriter _sqlObjectWriter;
+        private List<SqlObject> _sqlObjectList;
+        private SqlObjectParser _parser;
+        private /*SqlObjectFileLoader*/ISqlFileLoader _sqlFileLoader;
+
 
         #region _sqlObjectWriter wrippers
         public TextTransformation Output
@@ -57,10 +58,28 @@ namespace MsSqlFileMerger
             _sqlObjectWriter = new SqlObjectWriter();
             _sqlObjectList = new List<SqlObject>();
             _parser = new SqlObjectParser();
-            _sqlFileLoader = new SqlObjectFileLoader(_parser);
+
+            _sqlFileLoader = new SqlObjectFileLoader();
+            _sqlFileLoader.Init(_parser);
         }
 
-        public void Load(string dbName, string rootPath, Encoding encoding, string[] sqlFolders, bool isSpToEndFile)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dbName">Name of data base, need for 'use MyDataBase;go;'</param>
+        /// <param name="rootPath">Root path where helper will try to find folders (from sqlSourceFolders array)</param>
+        /// <param name="encoding">Sql files encoding</param>
+        /// <param name="sqlSourceFolders">Array of folders with sql code files</param>
+        /// <param name="isSpToEndFile"></param>
+        /// <param name="searchPattern">Search pattern for search of files with sql code, by default '*.sql'</param>
+        /// <param name="excludeFileList">Array of short file names (without path) which need ignore</param>
+        public void Load(string dbName
+            , string rootPath
+            , Encoding encoding
+            , string[] sqlSourceFolders
+            , bool isSpToEndFile
+            , string searchPattern = "*.sql"
+            , string[] excludeFileList = null)
         {
             try
             {
@@ -72,7 +91,7 @@ namespace MsSqlFileMerger
 
                 var createOrderCounter = 0;
 
-                foreach (var sqlFolder in sqlFolders)
+                foreach (var sqlFolder in sqlSourceFolders)
                 {
                     var folder = Path.Combine(rootPath, sqlFolder);
 
@@ -101,6 +120,11 @@ namespace MsSqlFileMerger
                             continue;
                         }
 
+                        var file = Path.GetFileName(sqlFile);
+
+                        if (excludeFileList != null && excludeFileList.Contains(file))
+                            continue;
+
                         if (!string.IsNullOrEmpty(sqlFile) && sqlFile.ToLower().Contains("ignore"))
                             continue;
 
@@ -125,7 +149,7 @@ namespace MsSqlFileMerger
             }
         }
 
-        public void WriteSqlScript()
+        public void WriteScriptSummary()
         {
             try
             {
@@ -142,6 +166,52 @@ namespace MsSqlFileMerger
                     Trace.TraceError($"-- Error in {nameof(WriteSqlScript)}, {ex.Message}");
             }
         }
+
+        public void WriteSqlScript()
+        {
+            WriteScriptSummary();
+        }
+
+        public void WriteScripts(string rootPath, Encoding encoding, string[] sqlSourceFiles)
+        {
+            foreach (var file in sqlSourceFiles)
+            {
+                try
+                {
+                    var filePath = Path.Combine(rootPath, file);
+
+                    if (!File.Exists(filePath))
+                    {
+                        if (Output != null)
+                            Output.WriteLine($"-- File not found '{filePath}'");
+                        else
+                            Trace.TraceError($"-- File not found '{filePath}'");
+                        continue;
+                    }
+
+                    _sqlObjectWriter.WriteLine("------------------------------------------------------------------------");
+                    _sqlObjectWriter.WriteLine($"-- file {filePath}");
+
+                    var lines = File.ReadAllLines(filePath, encoding);
+                    foreach (var line in lines)
+                    {
+                        _sqlObjectWriter.WriteLine(line);
+                    }
+
+                    _sqlObjectWriter.WriteLine("------------------------------------------------------------------------");
+                    _sqlObjectWriter.WriteLine("");
+                }
+                catch (Exception ex)
+                {
+                    if (Output != null)
+                        Output.WriteLine($"-- Error in {nameof(WriteScripts)}, {ex.Message}");
+                    else
+                        Trace.TraceError($"-- Error in {nameof(WriteScripts)}, {ex.Message}");
+                }
+            }
+           
+        }
+
 
         public void ReplaceInBody(string pattern, string newStr)
         {
@@ -161,5 +231,31 @@ namespace MsSqlFileMerger
                     Trace.TraceError($"-- Error in {nameof(WriteSqlScript)}, {ex.Message}");
             }
         }
+
+        #region IMergerForTest
+        SqlObjectWriter IMergerForTest.SqlObjectWriter
+        {
+            get => _sqlObjectWriter;
+            set => _sqlObjectWriter = value;
+        }
+
+        List<SqlObject> IMergerForTest.SqlObjectList
+        {
+            get => _sqlObjectList;
+            set => _sqlObjectList = value;
+        }
+
+        SqlObjectParser IMergerForTest.Parser
+        {
+            get => _parser;
+            set => _parser = value;
+        }
+
+        ISqlFileLoader IMergerForTest.SqlFileLoader
+        {
+            get => _sqlFileLoader;
+            set => _sqlFileLoader = value;
+        } 
+        #endregion
     }
 }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace MsSqlFileMerger
 {
-    internal enum SqlObjectTypeEnum
+    public enum SqlObjectTypeEnum
     {
-        No, Table, View, Procedure, Proc, Function
+        No, Table, View, Procedure, Proc, Function, Trigger
     }
 }

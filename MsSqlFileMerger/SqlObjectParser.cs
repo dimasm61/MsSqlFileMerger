@@ -8,7 +8,10 @@ using Microsoft.VisualStudio.TextTemplating;
 
 namespace MsSqlFileMerger
 {
-    internal class SqlObjectParser
+    /// <summary>
+    /// SQL script parser
+    /// </summary>
+    public class SqlObjectParser
     {
         public List<SqlObject> ParseStrArray(TextTransformation output, ref string[] lines, ref int createOrderCounter, string sqlSourceFile, bool isToEndFile)
         {
@@ -22,6 +25,7 @@ namespace MsSqlFileMerger
                 if (string.IsNullOrEmpty(line?.Trim()))
                     continue;
 
+                // as processing i iterator will changed
                 var list = ExtractSqlObject(output, ref lines, ref i, ref createOrderCounter, sqlSourceFile, isToEndFile);
 
                 foreach (var item in list)
@@ -50,8 +54,11 @@ namespace MsSqlFileMerger
             {
 
                 var obj = new SqlObject();
+
                 if (!Enum.TryParse(objectType, true, out SqlObjectTypeEnum a))
                 {
+                    // if parse is fail, log info and move to next "GO"
+
                     if (output != null)
                     {
                         output.WriteLine($"-- couldn't extract sql object type, schema, and name");
@@ -100,6 +107,9 @@ namespace MsSqlFileMerger
                         break;
                     case SqlObjectTypeEnum.Function:
                         ExtractSqlSp(ref lines, ref startLineNum, obj, isToEndFile);
+                        break;
+                    case SqlObjectTypeEnum.Trigger:
+                        ExtractSqlSp(ref lines, ref startLineNum, obj, false);
                         break;
                 }
 

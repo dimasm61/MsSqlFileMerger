@@ -9,11 +9,11 @@ using Microsoft.VisualStudio.TextTemplating;
 
 namespace MsSqlFileMerger
 {
-    internal class SqlObjectFileLoader
+    internal class SqlObjectFileLoader: ISqlFileLoader
     {
         private SqlObjectParser _parser;
 
-        public SqlObjectFileLoader(SqlObjectParser parser)
+        public void Init(SqlObjectParser parser)
         {
             _parser = parser;
         }
@@ -23,11 +23,13 @@ namespace MsSqlFileMerger
             var result = new List<SqlObject>();
             try
             {
+                // load file with encoding
                 var txt = File.ReadAllLines(fileName, encoding);
 
                 if (txt.Length > 0 && txt[0].StartsWith("T4_IGNORE"))
                     return new List<SqlObject>();
 
+                // parsing text to list of sql object
                 result =  _parser.ParseStrArray(output, ref txt, ref createOrderCounter, fileName, isSpToEndFile);
             }
             catch (Exception ex)

@@ -10,6 +10,8 @@
 <#@ import namespace="MsSqlFileMerger" #>
 <#  
 
+    // test example with exclude file and sctipts before and after
+
     string solutionDir = Host.ResolveAssemblyReference("$(SolutionDir)");
 
     var rootPath = $"{solutionDir}\\MsSqlFileMerger.Example\\Sql"; 
@@ -17,16 +19,24 @@
     var dbName = "TEST_LOG"; 
 
     var sqlFolders = new[]{ 
-         "Folder01",
-         "Folder02",
-        };
+            "Folder01",
+            "Folder02",
+            };
+
+    var excludeFiles = new[]{"02_View2.sql"};
+    var scriptsBefore = new[]{"ScriptBefore.sql"};
+    var scriptsAfter = new[]{"ScriptAfter.sql"};
 
     var merger = new SqlFileMergeHelper();
 
     merger.Output = this;
 
-    merger.Load(dbName, rootPath, Encoding.UTF8, sqlFolders, true);
+    merger.Load(dbName, rootPath, Encoding.UTF8, sqlFolders, true, "*.sql", excludeFiles);
+
+    merger.WriteScripts(rootPath, Encoding.UTF8, scriptsBefore);
 
     merger.WriteSqlScript();
+
+    merger.WriteScripts(rootPath, Encoding.UTF8, scriptsAfter);
 
  #>

@@ -1,11 +1,15 @@
 ﻿
 
-use TEST_LOG;
-go;
+------------------------------------------------------------------------
+-- file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\ScriptBefore.sql
+-- some script BEFORE
+-- line 1
+-- line 2
+-- line 3
+-- line 4
+------------------------------------------------------------------------
 
--- create order 3
-if exists(select 1 from sysobjects where id = object_id('dbo.TestView')and type = 'V')
-    drop view dbo.TestView
+use TEST_LOG
 go
 
 -- create order 2
@@ -35,8 +39,13 @@ go
 create procedure dbo.TestProc1
 as 
 begin
+    -- [version], [date]
     select 1;
 end
+go -- certainly after stored proc
+
+-- some test code
+exec dbp.TestProc1
 go
 
 
@@ -54,7 +63,8 @@ as
     union all select 5, newid()
 go
 
-select * from dbo.TestViewgo
+select * from dbo.TestView
+go
 
 
 /* ------------------------------------------------------------------ */
@@ -67,22 +77,18 @@ as
 begin
     select 1;
 end
+go -- certainly after stored proc
+
+-- some test code
+exec dbp.TestProc1
 go
 
-
-/* ------------------------------------------------------------------ */
-
--- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder02\02_View2.sql
--- generate order 3
-go
-create view dbo.TestView
-as
-              select 1, newid()
-    union all select 2, newid()
-    union all select 3, newid()
-    union all select 4, newid()
-    union all select 5, newid()
-go
-
-select * from dbo.TestViewgo
+------------------------------------------------------------------------
+-- file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\ScriptAfter.sql
+-- some script AFTER
+-- line 1
+-- line 2
+-- line 3
+-- line 4
+------------------------------------------------------------------------
 

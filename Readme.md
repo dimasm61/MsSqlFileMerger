@@ -4,7 +4,7 @@ Description
 --
 The library can be use in T4 template and provides an opportunity to merge a few sql files (with stored procs, functions, tables, views) into one sql script for data base scheme update.
 ***
-When it could be useful:
+It could be useful If:
 - you store SQL code in *.sql files in Visual Studio project;
 - you store one object in one file;
 - you use a similar approach to the contents of an SQL file as shown below:
@@ -59,3 +59,22 @@ Example of use
 --
 
 https://github.com/dimasm61/MsSqlFileMerger/tree/master/MsSqlFileMerger.Example
+
+1. Add reference (MsSqlFileMerger) to Visual Studio project with sql files.
+2. Rebuld project.
+3. Create T4 template, custom tool should be TextTemplatingFileGenerator.
+4. Add assambly to T4 script
+```XML
+<#@ assembly name="$(SolutionDir)[your project folder]\$(OutDir)MsSqlFileMerger.dll"#>
+```
+5. Import namespace
+```
+<#@ import namespace="MsSqlFileMerger" #>
+```
+6. Add code from example to T4 script.
+
+After rebuild your project, MsSqlFileMerger.dll will place in the output directory.
+After that T4 engine can find this assembly and use it.
+
+Also you can download assembly (without nuget) in any directory and set direct link.
+But mutch easier use merger as nuget package.

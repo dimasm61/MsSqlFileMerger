@@ -46,6 +46,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="OneSqlFile3.sql">
+      <DependentUpon>OneSqlFile3.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Content>
+    <Content Include="OneSqlFile3.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>OneSqlFile3.sql</LastGenOutput>
+    </Content>
     <Content Include="OneSqlFile2.sql">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -69,6 +78,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>OneSqlFile.tt</DependentUpon>
     </Content>
+    <Content Include="Sql\ScriptBefore.sql" />
+    <Content Include="Sql\ScriptAfter.sql" />
     <Content Include="Sql\Folder01\01_Proc1.sql" />
     <Content Include="Sql\Folder01\02_View1.sql" />
     <Content Include="Sql\Folder02\01_Proc2.sql" />

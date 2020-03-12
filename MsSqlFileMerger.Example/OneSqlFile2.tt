@@ -12,27 +12,12 @@
 
     string solutionsPath = Host.ResolveAssemblyReference("$(SolutionDir)");
 
-    var rootPath = @"M:\mcs_2019\trunk\02_Sql\VtsDb3\";
+    var rootPath = @"M:\github_dimasm61\sqlnotify2log\SqlNotify2LogVsSql";
 
     var dbName = "VTSDB3_1"; 
 
     var sqlFolders = new[]{ 
-            "Nsi", 
-            "Plan", 
-            "PassView", 
-            "Pilot", 
-            
-            "Request", 
-            "NavSign",
-            "Scan",
-            "Snr",
-            "User",
-            "Contact",
-            "Automation\\Views", 
-            "Automation\\Func", 
-
-            "Automation\\Sp", 
-            "PassSp", 
+            "01_DB_LOG_Tables_and_Sequences", 
             };
 
 

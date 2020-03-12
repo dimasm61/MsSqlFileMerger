@@ -101,8 +101,9 @@ namespace MsSqlFileMerger
                     }
 
                     // if find ' as ' - finish
-                    doWork = !(sb.CompareLastAddedSentence("as")
-                        || sb.CompareLastAddedSentence(@"\("));
+                    // doWork = !(sb.CompareLastAddedSentence("as")
+                    //     || sb.CompareLastAddedSentence(@"\("));
+                    doWork = !IsHaveObjectDefinition(sb);
                 }
 
                 MoveNextSymbol(ref doWork, ref lines, ref lineIndex, ref line, ref idx, ref sb);
@@ -114,7 +115,7 @@ namespace MsSqlFileMerger
 
             // extract object type and name using regex
             //var regex = new Regex(@"(create|alter)(\s*)(procedure|proc|table|trigger|view|function)(\s*)((\s[a-z]*[.])|\s)([a-zA-Z0-9]*)(.*)as", RegexOptions.IgnoreCase);
-            var regex = new Regex(@"((\s|[-]|[\/]|(?<=\ |^))((create|alter)[\s]*))((procedure|proc|procc|table|trigger|view|function)[\s])[\s]*(([a-zA-Z0-9^.]*[.][.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*[.][a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*))([a-zA-Z0-9]*)(.*)(as|\()(\s|[-]|\/)", RegexOptions.IgnoreCase);
+            var regex = new Regex(@"((\s|[-]|[\/]|(?<=\ |^))((create|alter)[\s]*))((procedure|proc|procc|table|trigger|view|function)[\s])[\s]*(([a-zA-Z0-9^.]*[.][.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*[.][a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*))([a-zA-Z0-9]*)(.*)((as|\()(\s|[-]|\/)|(\())", RegexOptions.IgnoreCase);
 
             var match = regex.Match(str);
 
@@ -273,6 +274,27 @@ namespace MsSqlFileMerger
 
             return match.Success;
 
+        }
+
+        private static bool IsHaveObjectDefinition(this StringBuilder sb)
+        {
+            
+
+            if (sb.Length < 20)
+                return false;
+
+            var str = sb.ToString();
+
+            if (!((str.Contains("create") || str.Contains("alter")) && (str.Contains(" as") || str.Contains("("))))
+            {
+                return false;
+            }
+
+            var regex = new Regex(@"((\s|[-]|[\/]|(?<=\ |^))((create|alter)[\s]*))((procedure|proc|procc|table|trigger|view|function)[\s])[\s]*(([a-zA-Z0-9^.]*[.][.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*[.][a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*))([a-zA-Z0-9]*)(.*)((as|\()(\s|[-]|\/)|(\())", RegexOptions.IgnoreCase);
+
+            var match = regex.Match(str);
+
+            return match.Success;
         }
 
     }

@@ -76,6 +76,7 @@
     <Compile Include="UnitTest02HeaderParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTest01StrHelpers.cs" />
+    <Compile Include="UnitTest05FileFilter.cs" />
     <Compile Include="UnitTest10AsUseExample.cs" />
   </ItemGroup>
   <ItemGroup>
