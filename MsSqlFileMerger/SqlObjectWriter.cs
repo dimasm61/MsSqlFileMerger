@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TextTemplating;
@@ -16,12 +19,15 @@ namespace MsSqlFileMerger
         public bool IsWriteGenOrder = true;
         public bool IsWriteFileName = true;
 
+        public string SolutionDir;
+
         public void WriteLine(string line)
         {
             if (Output != null)
                 Output.WriteLine(line);
             else
-                Console.WriteLine(line);
+                Trace.TraceInformation(line);
+
         }
 
         public void Write(string line)
@@ -29,7 +35,7 @@ namespace MsSqlFileMerger
             if (Output != null)
                 Output.Write(line);
             else
-                Console.WriteLine(line);
+                Trace.TraceInformation(line);
         }
 
         public void WriteUseDb(string dbName)
@@ -82,7 +88,10 @@ namespace MsSqlFileMerger
             {
                 WriteLine(RowDelimiterObject);
 
-                if (IsWriteFileName) WriteLine($"-- source file {obj.SqlSourceFile}");
+                var fileNameForWrite = obj.SqlSourceFile;
+                ClearFileName(SolutionDir, ref fileNameForWrite);
+
+                if (IsWriteFileName) WriteLine($"-- source file {fileNameForWrite}");
                 if (IsWriteGenOrder) WriteLine($"-- generate order {obj.CreateOrder}");
 
                 WriteLine($"go{Environment.NewLine}{obj.ObjectBody}");
@@ -93,6 +102,18 @@ namespace MsSqlFileMerger
                 WriteLine($"");
             }
 
+        }
+
+        public static void ClearFileName(string solutionPath, ref string sqlSourceFileName)
+        {
+            if (string.IsNullOrEmpty(solutionPath))
+                return;
+
+            var dir = new DirectoryInfo(solutionPath);
+            var a = sqlSourceFileName.Replace(solutionPath, "");
+            var b = Path.Combine(dir.Name, a);
+
+            sqlSourceFileName = $"..\\{b}";
         }
     }
 }

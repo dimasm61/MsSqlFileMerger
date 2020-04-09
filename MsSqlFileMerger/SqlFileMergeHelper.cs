@@ -12,14 +12,39 @@ using Microsoft.VisualStudio.TextTemplating;
 
 namespace MsSqlFileMerger
 {
-    public class SqlFileMergeHelper: IMerger, IMergerForTest
+    public partial class SqlFileMergeHelper : IMerger, IMergerForTest
     {
         private string _dbName = "";
         private SqlObjectWriter _sqlObjectWriter;
         private List<SqlObject> _sqlObjectList;
         private SqlObjectParser _parser;
-        private /*SqlObjectFileLoader*/ISqlFileLoader _sqlFileLoader;
+        private ISqlFileLoader _sqlFileLoader;
 
+        public bool IsTraceIfFindIgnoreKeyword
+        {
+            get => _sqlFileLoader.IsTraceIfFindIgnoreKeyword;
+            set => _sqlFileLoader.IsTraceIfFindIgnoreKeyword = value;
+        }
+
+        public string ScriptRootPath=> Path.Combine(SolutionPath, _scriptRootFolder);
+
+        public string SolutionPath
+        {
+            get => _sqlObjectWriter.SolutionDir;
+            set => _sqlObjectWriter.SolutionDir = value;
+        }
+
+        private string _scriptRootFolder;
+
+        public void SetScriptRootFolder(string solutionPath, string scriptRootFolder)
+        {
+            SolutionPath = solutionPath.Trim('\\');
+
+            _scriptRootFolder = scriptRootFolder.Trim('\\');
+
+            if(!Directory.Exists(ScriptRootPath))
+                throw new Exception($"Не удалось найти путь {ScriptRootPath}, проверьте аргументы {nameof(SetScriptRootFolder)}");
+        }
 
         #region _sqlObjectWriter wrippers
         public TextTransformation Output
@@ -50,7 +75,7 @@ namespace MsSqlFileMerger
         }
         #endregion
 
-
+        private int _createOrderCounter;
 
         public SqlFileMergeHelper()
         {
@@ -88,8 +113,8 @@ namespace MsSqlFileMerger
                 _sqlObjectList.Clear();
 
                 var readedFiles = new List<string>();
-
-                var createOrderCounter = 0;
+                var outputList = new List<LogItem>();
+                _createOrderCounter = 0;
 
                 foreach (var sqlFolder in sqlSourceFolders)
                 {
@@ -97,10 +122,7 @@ namespace MsSqlFileMerger
 
                     if (!Directory.Exists(folder))
                     {
-                        if (Output != null)
-                            Output.WriteLine($"-- Path not found '{folder}'");
-                        else
-                            Trace.TraceError($"-- Path not found '{folder}'");
+                        outputList.Add($"-- Path not found '{folder}'");
                         continue;
                     }
 
@@ -112,10 +134,7 @@ namespace MsSqlFileMerger
 
                         if (!File.Exists(sqlFile))
                         {
-                            if (Output != null)
-                                Output.WriteLine($"-- File not found '{sqlFile}'");
-                            else
-                                Trace.TraceError($"-- File not found '{sqlFile}'");
+                            outputList.Add($"-- File not found '{sqlFile}'");
 
                             continue;
                         }
@@ -128,7 +147,7 @@ namespace MsSqlFileMerger
                         if (!string.IsNullOrEmpty(sqlFile) && sqlFile.ToLower().Contains("ignore"))
                             continue;
 
-                        var parsedObjects = _sqlFileLoader.LoadFile(Output, sqlFile, encoding, ref createOrderCounter, isSpToEndFile);
+                        var parsedObjects = _sqlFileLoader.LoadFile( SolutionPath, sqlFile, encoding, ref _createOrderCounter, isSpToEndFile, outputList);
 
                         foreach (var parsedObject in parsedObjects)
                         {
@@ -139,6 +158,9 @@ namespace MsSqlFileMerger
 
                     }//foreach( var sqlFile in files)
                 }//foreach(var sqlFolder in sqlFolders)
+
+                // write output - there are can be parse errors
+                LogItem.WriteList(Output, outputList);
             }
             catch (Exception ex)
             {
@@ -148,6 +170,8 @@ namespace MsSqlFileMerger
                     Trace.TraceError($"-- Error in {nameof(Load)}, {ex.Message}");
             }
         }
+
+
 
         public void WriteScriptSummary()
         {
@@ -167,9 +191,18 @@ namespace MsSqlFileMerger
             }
         }
 
+        /// <summary>
+        /// Deprecated, have to use WriteScriptSummary method
+        /// </summary>
         public void WriteSqlScript()
         {
             WriteScriptSummary();
+        }
+
+
+        public void WriteScripts( Encoding encoding, string[] sqlSourceFiles)
+        {
+            WriteScripts(ScriptRootPath, encoding, sqlSourceFiles);
         }
 
         public void WriteScripts(string rootPath, Encoding encoding, string[] sqlSourceFiles)
@@ -189,8 +222,11 @@ namespace MsSqlFileMerger
                         continue;
                     }
 
+                    var filePathForPrint = filePath;
+                    SqlObjectWriter.ClearFileName(SolutionPath, ref filePathForPrint);
+
                     _sqlObjectWriter.WriteLine("------------------------------------------------------------------------");
-                    _sqlObjectWriter.WriteLine($"-- file {filePath}");
+                    _sqlObjectWriter.WriteLine($"-- file {filePathForPrint}");
 
                     var lines = File.ReadAllLines(filePath, encoding);
                     foreach (var line in lines)
@@ -209,7 +245,7 @@ namespace MsSqlFileMerger
                         Trace.TraceError($"-- Error in {nameof(WriteScripts)}, {ex.Message}");
                 }
             }
-           
+
         }
 
 
@@ -255,7 +291,7 @@ namespace MsSqlFileMerger
         {
             get => _sqlFileLoader;
             set => _sqlFileLoader = value;
-        } 
+        }
         #endregion
     }
 }

@@ -9,13 +9,6 @@
 <#@ assembly name="$(SolutionDir)MsSqlFileMerger.Example\$(OutDir)MsSqlFileMerger.dll"#>
 <#@ import namespace="MsSqlFileMerger" #>
 <#  
-
-    // test example with exclude file and sctipts before and after
-
-    string solutionDir = Host.ResolveAssemblyReference("$(SolutionDir)");
-
-    var rootPath = $"{solutionDir}\\MsSqlFileMerger.Example\\Sql"; 
-
     var dbName = "TEST_LOG"; 
 
     var sqlFolders = new[]{ 
@@ -29,14 +22,16 @@
 
     var merger = new SqlFileMergeHelper();
 
+    merger.SetScriptRootFolder(Host.ResolveAssemblyReference("$(SolutionDir)"), "\\MsSqlFileMerger.Example\\Sql");
+
     merger.Output = this;
 
-    merger.Load(dbName, rootPath, Encoding.UTF8, sqlFolders, true, "*.sql", excludeFiles);
+    merger.LoadParallel(dbName, Encoding.UTF8, sqlFolders, true, "*.sql", excludeFiles);
 
-    merger.WriteScripts(rootPath, Encoding.UTF8, scriptsBefore);
+    merger.WriteScripts(Encoding.UTF8, scriptsBefore);
 
     merger.WriteSqlScript();
 
-    merger.WriteScripts(rootPath, Encoding.UTF8, scriptsAfter);
+    merger.WriteScripts( Encoding.UTF8, scriptsAfter);
 
  #>

@@ -13,7 +13,13 @@ namespace MsSqlFileMerger
     /// </summary>
     public class SqlObjectParser
     {
-        public List<SqlObject> ParseStrArray(TextTransformation output, ref string[] lines, ref int createOrderCounter, string sqlSourceFile, bool isToEndFile)
+        public List<SqlObject> ParseStrArray(
+            //TextTransformation output
+              ref string[] lines
+            , ref int createOrderCounter
+            , string sqlSourceFile
+            , bool isToEndFile
+            , List<LogItem> outputList)
         {
             var result = new List<SqlObject>();
             var i = 0;
@@ -26,7 +32,7 @@ namespace MsSqlFileMerger
                     continue;
 
                 // as processing i iterator will changed
-                var list = ExtractSqlObject(output, ref lines, ref i, ref createOrderCounter, sqlSourceFile, isToEndFile);
+                var list = ExtractSqlObject(/*output,*/ ref lines, ref i, ref createOrderCounter, sqlSourceFile, isToEndFile, outputList);
 
                 foreach (var item in list)
                     result.Add(item);
@@ -37,7 +43,14 @@ namespace MsSqlFileMerger
         }
 
 
-        private List<SqlObject> ExtractSqlObject(TextTransformation output, ref string[] lines, ref int startLineNum, ref int createOrderCounter, string sqlSourceFile, bool isToEndFile)
+        private List<SqlObject> ExtractSqlObject(
+            //TextTransformation output
+              ref string[] lines
+            , ref int startLineNum
+            , ref int createOrderCounter
+            , string sqlSourceFile
+            , bool isToEndFile
+            , List<LogItem> outputList)
         {
             var result = new List<SqlObject>();
 
@@ -59,16 +72,25 @@ namespace MsSqlFileMerger
                 {
                     // if parse is fail, log info and move to next "GO"
 
-                    if (output != null)
-                    {
-                        output.WriteLine($"-- couldn't extract sql object type, schema, and name");
-                        output.WriteLine($"-- something wrong in header string '{s}'");
-                    }
-                    else
-                    {
-                        Trace.TraceWarning($"-- couldn't extract sql object type, schema, and name");
-                        Trace.TraceWarning($"-- something wrong in header string '{s}'");
-                    }
+                    //Trace.TraceWarning($"-- couldn't extract sql object type, schema, and name");
+                    //Trace.TraceWarning($"-- something wrong in header string '{s}'");
+                    outputList.Add($"couldn't extract sql object type, schema, and name");
+                    outputList.Add($"something wrong in header string '{s}'");
+
+                    //if (output != null)
+                    //{
+                    //    output.WriteLine($"-- couldn't extract sql object type, schema, and name");
+                    //    output.WriteLine($"-- something wrong in header string '{s}'");
+                    //    outputList.Add($"-- couldn't extract sql object type, schema, and name");
+                    //    outputList.Add($"-- something wrong in header string '{s}'");
+                    //}
+                    //else
+                    //{
+                    //    Trace.TraceWarning($"-- couldn't extract sql object type, schema, and name");
+                    //    Trace.TraceWarning($"-- something wrong in header string '{s}'");
+                    //    outputList.Add($"-- couldn't extract sql object type, schema, and name");
+                    //    outputList.Add($"-- something wrong in header string '{s}'");
+                    //}
 
                     // something in header fail
                     // try move to next GO

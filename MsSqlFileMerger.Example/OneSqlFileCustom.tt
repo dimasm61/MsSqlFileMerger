@@ -9,10 +9,6 @@
 <#@ assembly name="$(SolutionDir)MsSqlFileMerger.Example\$(OutDir)MsSqlFileMerger.dll"#>
 <#@ import namespace="MsSqlFileMerger" #>
 <#  
-    string solutionDir = Host.ResolveAssemblyReference("$(SolutionDir)");
-
-    var rootPath = $"{solutionDir}\\MsSqlFileMerger.Example\\Sql"; 
-
     var dbName = "TEST_LOG"; 
 
     var sqlFolders = new[]{ 
@@ -22,6 +18,8 @@
 
     var merger = new SqlFileMergeHelper();
 
+    merger.SetScriptRootFolder(Host.ResolveAssemblyReference("$(SolutionDir)"), "\\MsSqlFileMerger.Example\\Sql");
+
     merger.Output = this;
 
     // setup generate options
@@ -30,7 +28,7 @@
     merger.RowDelimiterDropCreate = null;
     merger.RowDelimiterObject = "-- ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙";
 
-    merger.Load(dbName, rootPath, Encoding.UTF8, sqlFolders, false);
+    merger.LoadParallel(dbName, Encoding.UTF8, sqlFolders, false);
 
     // add version and date to sql proc body (by template)
     merger.ReplaceInBody("[version]","ver:0.0.1.9");

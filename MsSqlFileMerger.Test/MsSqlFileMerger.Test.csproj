@@ -76,6 +76,7 @@
     <Compile Include="UnitTest02HeaderParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTest01StrHelpers.cs" />
+    <Compile Include="UnitTest05AddingScripts.cs" />
     <Compile Include="UnitTest05FileFilter.cs" />
     <Compile Include="UnitTest10AsUseExample.cs" />
   </ItemGroup>
@@ -100,6 +101,7 @@
     <Content Include="Sp\04_spLogDo.sql" />
     <Content Include="Sp\05_spLogSimpleDo.sql" />
     <Content Include="Sp\10_nav.spAfterPassNew.sql" />
+    <Content Include="Sp\11_spAnchorDrop.sql" />
     <Content Include="Sp\10_spLogActionSetLogObjectDo.sql" />
     <Content Include="Table\01_Tables.sql" />
     <Content Include="Test\test_proc.sql" />

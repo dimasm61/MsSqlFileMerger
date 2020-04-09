@@ -9,7 +9,14 @@ namespace MsSqlFileMerger
 {
     internal static class SqlObjectParserInfo
     {
-        public static string ExtractObjectInfo(this string[] lines, ref int lineIndex, ref int startObjectLineIdx, ref string objectType, ref string objectSchema, ref string objectName)
+        public static string ExtractObjectInfo(
+            this string[] lines
+            , ref int lineIndex
+            , ref int startObjectLineIdx
+            , ref string objectType
+            , ref string objectSchema
+            , ref string objectName
+            )
         {
             if (lineIndex >= lines.Length - 1)
                 return "";
@@ -21,7 +28,7 @@ namespace MsSqlFileMerger
             var commentDepth = 0;
             var doWork = true;
             var idx = 0;
-            var line = lines[lineIndex];
+            var line = lines[lineIndex].TrimEnd('\r','\n');
             startObjectLineIdx = lineIndex;
 
             //                  idx    i-1,  i , i+1
@@ -115,7 +122,16 @@ namespace MsSqlFileMerger
 
             // extract object type and name using regex
             //var regex = new Regex(@"(create|alter)(\s*)(procedure|proc|table|trigger|view|function)(\s*)((\s[a-z]*[.])|\s)([a-zA-Z0-9]*)(.*)as", RegexOptions.IgnoreCase);
+
             var regex = new Regex(@"((\s|[-]|[\/]|(?<=\ |^))((create|alter)[\s]*))((procedure|proc|procc|table|trigger|view|function)[\s])[\s]*(([a-zA-Z0-9^.]*[.][.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*[.][a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*))([a-zA-Z0-9]*)(.*)((as|\()(\s|[-]|\/)|(\())", RegexOptions.IgnoreCase);
+
+            //var regex = new Regex(  
+            //      @"((\s|[-]|[\/]|(?<=\ |^))((create|alter)[\s]*))" 
+            //    + @"((procedure|proc|table|trigger|view|function)[\s])"
+            //    + @"[\s]*"
+            //    + @"(([a-zA-Z0-9^.]*[.][.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*[.][a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*))([a-zA-Z0-9]*)" 
+            //    + @"(.*|\s)((\s|as|\()(\s|[-]|\/)|(\())"
+            //    , RegexOptions.IgnoreCase);
 
             var match = regex.Match(str);
 
@@ -278,19 +294,18 @@ namespace MsSqlFileMerger
 
         private static bool IsHaveObjectDefinition(this StringBuilder sb)
         {
-            
-
-            if (sb.Length < 20)
+            if (sb.Length < 23)
                 return false;
 
-            var str = sb.ToString();
+            var str = sb.ToString()?.ToLower();
 
             if (!((str.Contains("create") || str.Contains("alter")) && (str.Contains(" as") || str.Contains("("))))
             {
                 return false;
             }
 
-            var regex = new Regex(@"((\s|[-]|[\/]|(?<=\ |^))((create|alter)[\s]*))((procedure|proc|procc|table|trigger|view|function)[\s])[\s]*(([a-zA-Z0-9^.]*[.][.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*[.][a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*))([a-zA-Z0-9]*)(.*)((as|\()(\s|[-]|\/)|(\())", RegexOptions.IgnoreCase);
+            var regex = new Regex(@"((\s|[-]|[\/]|(?<=\ |^))((create|alter)[\s]*))((procedure|proc|table|trigger|view|function)[\s])[\s]*(([a-zA-Z0-9^.]*[.][.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*[.][a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-z0-9^.]*[.][a-zA-z0-9^.]*)|([a-zA-Z0-9^.]*))([a-zA-Z0-9]*)(.*)(\s)((as|\()(\s|[-]|\/)|(\())"
+                , RegexOptions.IgnoreCase);
 
             var match = regex.Match(str);
 

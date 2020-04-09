@@ -50,7 +50,8 @@ You can define order of generation the following ways:
 ```
 
 ***
-It important to note that I use very easy way to parse sql file and selection sql objects body. And I tested it only on sql code of my company.
+It important to note that I use very easy (and picky) algorithm to parse sql file and extract sql objects body based on regex. 
+And I tested it only on sql code of my company.
 In some other cases it may not work.
 You should to check your T4 result sql script.
 ***
@@ -61,7 +62,7 @@ Example of use
 https://github.com/dimasm61/MsSqlFileMerger/tree/master/MsSqlFileMerger.Example
 
 1. Add reference (MsSqlFileMerger) to Visual Studio project with sql files.
-2. Rebuld project.
+2. Rebuld project. MsSqlFileMerger.dll will be copy to OutDir of solution.
 3. Create T4 template, custom tool should be TextTemplatingFileGenerator.
 4. Add assambly to T4 script
 ```XML

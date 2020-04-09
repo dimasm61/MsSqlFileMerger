@@ -109,12 +109,23 @@ namespace MsSqlFileMerger.Test
             ParseAndWriteFile(fileName, false);
         }
 
+        [TestMethod]
+        public void TestMethod_11_spAnchorDrop()
+        {
+            var solutionsPath = @"M:\github_dimasm61\MsSqlFileMerger\";
+            var rootPath = $"{solutionsPath}\\MsSqlFileMerger.Test\\Sp";
+            var fileName = $"{rootPath}\\11_spAnchorDrop.sql";
+
+            ParseAndWriteFile(fileName, false);
+        }
+
         private void ParseAndWriteFile(string fileName, bool isToEndFile = true)
         {
             var writer = new SqlObjectWriter();
             var sqlObjectList = new List<SqlObject>();
             var parser = new SqlObjectParser();
 
+            var outputList = new List<LogItem>();
             var txt = File.ReadAllLines(fileName, Encoding.UTF8);
             var list = new List<string>();
             var createOrderCounter = 1;
@@ -129,7 +140,7 @@ namespace MsSqlFileMerger.Test
 
 
                     var arr = list.ToArray();
-                    var parsedObjects = parser.ParseStrArray(null, ref arr, ref createOrderCounter, $"fileTest{createOrderCounter}", isToEndFile);
+                    var parsedObjects = parser.ParseStrArray(ref arr, ref createOrderCounter, $"fileTest{createOrderCounter}", isToEndFile, outputList);
 
                     if (parsedObjects.Any()) objectInFileCounter++;
 
@@ -150,7 +161,7 @@ namespace MsSqlFileMerger.Test
             if (list.Any())
             {
                 var arr = list.ToArray();
-                var parsedObjects = parser.ParseStrArray(null, ref arr, ref createOrderCounter, $"fileTest{createOrderCounter}", isToEndFile);
+                var parsedObjects = parser.ParseStrArray(ref arr, ref createOrderCounter, $"fileTest{createOrderCounter}", isToEndFile, outputList);
 
                 if (parsedObjects.Any()) objectInFileCounter++;
 

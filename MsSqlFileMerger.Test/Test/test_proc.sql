@@ -155,3 +155,7 @@ as begin
     return 1
 end
 */  return( select '' as  a)
+go
+
+CREATE PROCEDURE dbo.proc19 AS SELECT 1, 10
+go

@@ -64,6 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces.cs" />
+    <Compile Include="LogItem.cs" />
+    <Compile Include="SqlFileMergeHelper_Parallel.cs" />
     <Compile Include="SqlObjectFileLoader.cs" />
     <Compile Include="SqlFileMergeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

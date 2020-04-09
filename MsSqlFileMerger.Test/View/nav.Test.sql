@@ -1,5 +1,4 @@
 alter view nav.vActPass as
-    -- МДО13.12.2019 представлениедляподсистемыCollaborationDesk (CoDesk), изменениядолжнысогласовыватьсяссерверомприложенияиUI
     select
         p.PassGuid
       , p.PassNumber

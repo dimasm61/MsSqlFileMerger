@@ -2,7 +2,7 @@
 <package >
     <metadata>
         <id>MsSqlFileMerger</id>
-        <version>0.0.0.9</version>
+        <version>0.0.0.10</version>
         <title>MsSqlFileMerger</title>
         <authors>dimasm61</authors>
         <owners>dimasm61</owners>
@@ -12,7 +12,7 @@
         <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>T4 generator extension class for merge SQL script files into one</description>
-        <releaseNotes>Some bugs fixed. Example of use: https://github.com/dimasm61/MsSqlFileMerger/tree/master/MsSqlFileMerger.Example
+        <releaseNotes>Bugs fixed. Use of multitasks. Example of use: https://github.com/dimasm61/MsSqlFileMerger/tree/master/MsSqlFileMerger.Example
         </releaseNotes>
         <copyright>free</copyright>
         <tags>T4 sql</tags>

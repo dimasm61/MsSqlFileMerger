@@ -1,7 +1,8 @@
 ﻿
 
+-- didn't found sp/func/view in file M:\github_dimasm61\MsSqlFileMerger\MsSqlFileMerger.Example\Sql\Folder02\03_Func2.sql
 ------------------------------------------------------------------------
--- file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\ScriptBefore.sql
+-- file ..\\MsSqlFileMerger.Example\Sql\ScriptBefore.sql
 -- some script BEFORE
 -- line 1
 -- line 2
@@ -33,7 +34,7 @@ go
 
 /* ------------------------------------------------------------------ */
 
--- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder01\01_Proc1.sql
+-- source file ..\\MsSqlFileMerger.Example\Sql\Folder01\01_Proc1.sql
 -- generate order 0
 go
 create procedure dbo.TestProc1
@@ -51,7 +52,7 @@ go
 
 /* ------------------------------------------------------------------ */
 
--- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder01\02_View1.sql
+-- source file ..\\MsSqlFileMerger.Example\Sql\Folder01\02_View1.sql
 -- generate order 1
 go
 create view dbo.TestView
@@ -69,7 +70,7 @@ go
 
 /* ------------------------------------------------------------------ */
 
--- source file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\Folder02\01_Proc2.sql
+-- source file ..\\MsSqlFileMerger.Example\Sql\Folder02\01_Proc2.sql
 -- generate order 2
 go
 create procedure dbo.TestProc1
@@ -84,7 +85,7 @@ exec dbp.TestProc1
 go
 
 ------------------------------------------------------------------------
--- file M:\github_dimasm61\MsSqlFileMerger\\MsSqlFileMerger.Example\Sql\ScriptAfter.sql
+-- file ..\\MsSqlFileMerger.Example\Sql\ScriptAfter.sql
 -- some script AFTER
 -- line 1
 -- line 2

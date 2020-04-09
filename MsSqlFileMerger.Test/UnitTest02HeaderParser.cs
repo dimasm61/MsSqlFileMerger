@@ -27,6 +27,8 @@ namespace MsSqlFileMerger.Test
 
             s = s.Trim();
 
+            Trace.WriteLine(s);
+
             Assert.AreEqual(trueObjectType     , objectType        , "Not match type");
             Assert.AreEqual(trueObjectSchema   , objectSchema      , "Not match schema");
             Assert.AreEqual(trueObjectName     , objectName        , "Not match name");
@@ -264,5 +266,53 @@ namespace MsSqlFileMerger.Test
 
             TestAndCheckResult(ref lines, 1, "procedure", "nav", "PassArchiveSelect");
         }
+
+        [TestMethod]
+        public void TestMethod_ParseCommentFilter15()
+        {
+            var lines = new[]
+            {
+                "/*comment*/ CREATE",
+                "     function [nav].[fnGetDirectionByInPos]",
+                "     as",
+                "     begin",
+            };
+
+            TestAndCheckResult(ref lines, 0, "function", "nav", "fnGetDirectionByInPos");
+        }
+
+
+        [TestMethod]
+        public void TestMethod_ParseCommentFilter16()
+        {
+            var lines = new[]
+            {
+                  "GO "
+                , " "
+                , " "
+                , "CREATE procedure [atm].[spAnchorDrop]"
+                , "@vesselGuid uniqueidentifier "
+                , ", @actDate                datetime "
+                , ", @actPositionCode varchar(10) "
+                , ", @actPositionTypeCode varchar(10) "
+                , ", @actVtsCode varchar( 2) "
+                , ", @actVtsZoneCode varchar( 2) "
+                , ", @actLat float            = null "
+                , ", @actLon float            = null "
+                , ", @newPassGuid uniqueidentifier output "
+                , " as "
+                , "begin "
+                , "-- 02.2020 ПСА: обработка постановки на якорь "
+                , " "
+                , "declare @prevPassGuid           uniqueidentifier "
+                , "declare @prevReceiptTypeCode varchar( 5) "
+            };
+
+            TestAndCheckResult(ref lines, 1, "procedure", "atm", "spAnchorDrop");
+        }
     }
+
+
+
+
 }
