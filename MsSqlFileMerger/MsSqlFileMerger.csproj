@@ -85,8 +85,8 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)NugetPackage\lib\" /y
 
-"$(SolutionDir)nuget.exe" pack "$(SolutionDir)NugetPackage\MsSqlFileMerger.nuspec" -Version 0.0.0.9 -OutputDirectory "$(SolutionDir)NugetPackage"
+"$(SolutionDir)nuget.exe" pack "$(SolutionDir)NugetPackage\MsSqlFileMerger.nuspec" -Version 0.0.0.10 -OutputDirectory "$(SolutionDir)NugetPackage"
 
-copy "$(SolutionDir)NugetPackage\MsSqlFileMerger.0.0.0.9.nupkg" "M:\LocalRep" /y</PostBuildEvent>
+copy "$(SolutionDir)NugetPackage\MsSqlFileMerger.0.0.0.10.nupkg" "M:\LocalRep" /y</PostBuildEvent>
   </PropertyGroup>
 </Project>
